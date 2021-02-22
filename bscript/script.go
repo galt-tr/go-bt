@@ -108,7 +108,7 @@ func NewP2PKHFromPubKeyHashStr(pubKeyHash string) (*Script, error) {
 
 // NewP2PKHFromAddress takes an address
 // and creates a P2PKH script from it.
-func NewP2PKHFromAddress(addr string) (*Script, error) {
+func NewP2PKHFromAddress(addr string, data [][]byte) (*Script, error) {
 
 	a, err := NewAddressFromString(addr)
 	if err != nil {
@@ -128,6 +128,10 @@ func NewP2PKHFromAddress(addr string) (*Script, error) {
 	}
 	s.AppendOpCode(OpEQUALVERIFY)
 	s.AppendOpCode(OpCHECKSIG)
+	s.AppendPushDataArray(data)
+	for _, _ = range data {
+		s.AppendOpCode(OpDROP)
+	}
 
 	return s, nil
 }
@@ -193,6 +197,24 @@ func (s *Script) AppendOpCode(o uint8) {
 // ToString returns hex string of script.
 func (s *Script) ToString() string { // TODO: change to HexString?
 	return hex.EncodeToString(*s)
+}
+
+func (s *Script) ToScriptHash() string {
+	sum := crypto.Sha256(*s)
+	hexSum := hex.EncodeToString(sum)
+	return reverse(hexSum)
+}
+
+// Helper
+func reverse(arr string) string {
+	newArr := ""
+	length := len(arr) / 2
+	for i := 0; i < length; i++ {
+		el := arr[len(arr)-2:]
+		newArr = newArr + el
+		arr = arr[:len(arr)-2]
+	}
+	return newArr
 }
 
 // ToASM returns the string ASM opcodes of the script.
