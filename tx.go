@@ -191,8 +191,8 @@ func (tx *Tx) AddOutput(output *Output) {
 
 // PayTo creates a new P2PKH output from a BitCoin address (base58)
 // and the satoshis amount and adds that to the transaction.
-func (tx *Tx) PayTo(addr string, satoshis uint64) error {
-	o, err := NewP2PKHOutputFromAddress(addr, satoshis)
+func (tx *Tx) PayTo(addr string, satoshis uint64, data [][]byte) error {
+	o, err := NewP2PKHOutputFromAddress(addr, satoshis, data)
 	if err != nil {
 		return err
 	}
@@ -204,7 +204,7 @@ func (tx *Tx) PayTo(addr string, satoshis uint64) error {
 // ChangeToAddress calculates the amount of fees needed to cover the transaction
 // and adds the left over change in a new P2PKH output using the address provided.
 func (tx *Tx) ChangeToAddress(addr string, f []*Fee) error {
-	s, err := bscript.NewP2PKHFromAddress(addr)
+	s, err := bscript.NewP2PKHFromAddress(addr, [][]byte{})
 	if err != nil {
 		return err
 	}
