@@ -91,8 +91,8 @@ func NewP2PKHOutputFromPubKeyStr(publicKey string, satoshis uint64) (*Output, er
 }
 
 // NewP2PKHOutputFromAddress makes an output to a PKH with a value.
-func NewP2PKHOutputFromAddress(addr string, satoshis uint64) (*Output, error) {
-	s, err := bscript.NewP2PKHFromAddress(addr)
+func NewP2PKHOutputFromAddress(addr string, satoshis uint64, data [][]byte) (*Output, error) {
+	s, err := bscript.NewP2PKHFromAddress(addr, data)
 	if err != nil {
 		return nil, err
 	}

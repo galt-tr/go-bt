@@ -108,7 +108,7 @@ func NewP2PKHFromPubKeyHashStr(pubKeyHash string) (*Script, error) {
 
 // NewP2PKHFromAddress takes an address
 // and creates a P2PKH script from it.
-func NewP2PKHFromAddress(addr string) (*Script, error) {
+func NewP2PKHFromAddress(addr string, data [][]byte) (*Script, error) {
 
 	a, err := NewAddressFromString(addr)
 	if err != nil {
@@ -128,6 +128,10 @@ func NewP2PKHFromAddress(addr string) (*Script, error) {
 	}
 	s.AppendOpCode(OpEQUALVERIFY)
 	s.AppendOpCode(OpCHECKSIG)
+	s.AppendPushDataArray(data)
+	for _, _ = range data {
+		s.AppendOpCode(OpDROP)
+	}
 
 	return s, nil
 }
